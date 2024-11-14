@@ -67,3 +67,6 @@ X、マタモにて”最近、褒めらていますか？”などの文章と�
 
 # ■ 画面遷移図
 https://www.figma.com/design/GGJ74bLJkVvCt4CLJfbrfe/HoMee-%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?node-id=0-1&t=ipzV3YsEuZcld99P-1
+
+# ■ ER図
+https://drive.google.com/file/d/16vt61gyRdXIZR_pGMJP1Dwn2DlKbirwx/view?usp=sharing
