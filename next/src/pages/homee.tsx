@@ -4,7 +4,7 @@ import SimpleButton from '@/components/SimpleButton'
 const HoMee: NextPage = () => {
   const handleOnClick = () => {
     console.log('Clicked from hello_world')
-   }
+  }
 
   return (
     <>
