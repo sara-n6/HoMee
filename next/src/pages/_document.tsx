@@ -71,8 +71,7 @@ MyDocument.getInitialProps = async (ctx): Promise<DocumentInitialProps> => {
       enhanceApp:
         (App: any) =>
         // eslint-disable-next-line react/display-name
-        (props): JSX.Element =>
-          <App emotionCache={cache} {...props} />,
+        (props): JSX.Element => <App emotionCache={cache} {...props} />,
     })
 
   const initialProps = await Document.getInitialProps(ctx)

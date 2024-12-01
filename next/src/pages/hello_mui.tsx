@@ -4,7 +4,7 @@ import type { NextPage } from 'next'
 const HelloMui: NextPage = () => {
   return (
     <>
-            <Button
+      <Button
         variant="contained"
         sx={{ p: 6, ml: 2, mt: 3, color: 'white', textTransform: 'none' }}
       >
