@@ -1,6 +1,12 @@
 ---
 ja:
   activerecord:
+    attributes:
+      task:
+        title: タイトル
+        body: 本文
+        end_date: 期限
+        completed_date: 達成日
     errors:
       messages:
         record_invalid: 'バリデーションに失敗しました: %{errors}'
