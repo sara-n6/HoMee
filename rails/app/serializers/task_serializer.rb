@@ -1,6 +1,10 @@
 class TaskSerializer < ActiveModel::Serializer
-  attributes :id, :title, :body, :created_at, :from_today
+  attributes :id, :title, :body, :status, :created_at, :from_today
   belongs_to :user, serializer: UserSerializer
+
+  def status
+    object.status_i18n
+  end
 
   def created_at
     object.created_at.strftime("%Y/%m/%d")
