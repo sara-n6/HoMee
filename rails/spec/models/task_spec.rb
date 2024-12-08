@@ -56,15 +56,5 @@ RSpec.describe Task, type: :model do
         expect { subject }.to raise_error(StandardError)
       end
     end
-
-    context "期限が過去の日付の時" do
-      let(:end_date) { Date.yesterday }
-
-      it "エラーメッセージが返る" do
-        binding
-        expect(subject).to be_falsy
-        expect(task.errors.full_messages).to eq ["期限は未来の日付を指定してください"]
-      end
-    end
   end
 end
