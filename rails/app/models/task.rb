@@ -9,7 +9,7 @@ class Task < ApplicationRecord
 
     def verify_only_one_unsaved_status_is_allowed
       if unsaved? && user.tasks.unsaved.present?
-        raise StandardError, "未保存の記事は複数保有できません"
+        raise StandardError, "未保存の場合は複数保有できません"
       end
     end
 end
