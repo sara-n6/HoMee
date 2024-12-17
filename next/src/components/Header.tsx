@@ -140,7 +140,7 @@ const Header = () => {
                         <ListItemIcon>
                           <Logout fontSize="small" />
                         </ListItemIcon>
-                        サインアウト
+                        ログアウト
                       </MenuItem>
                     </Link>
                   </Menu>
