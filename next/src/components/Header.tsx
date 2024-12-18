@@ -129,18 +129,20 @@ const Header = () => {
                       </Typography>
                     </Box>
                     <Divider />
-                    <MenuItem>
-                      <ListItemIcon>
-                        <TaskIcon fontSize="small" />
-                      </ListItemIcon>
-                      タスクの管理
-                    </MenuItem>
+                    <Link href="/current/tasks">
+                      <MenuItem>
+                        <ListItemIcon>
+                          <TaskIcon fontSize="small" />
+                        </ListItemIcon>
+                        タスクの管理
+                      </MenuItem>
+                    </Link>
                     <Link href="/sign_out">
                       <MenuItem>
                         <ListItemIcon>
                           <Logout fontSize="small" />
                         </ListItemIcon>
-                        サインアウト
+                        ログアウト
                       </MenuItem>
                     </Link>
                   </Menu>
