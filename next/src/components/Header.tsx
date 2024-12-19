@@ -14,6 +14,7 @@ import {
   ListItemIcon,
   Typography,
 } from '@mui/material'
+import axios, { AxiosResponse, AxiosError } from 'axios'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -21,16 +22,38 @@ import { useState } from 'react'
 import { useUserState } from '@/hooks/useGlobalState'
 
 const Header = () => {
-  const router = useRouter()
   const [user] = useUserState()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
+  const router = useRouter()
+
+  const hideHeaderPathnames = ['/current/tasks/edit/[id]']
+  if (hideHeaderPathnames.includes(router.pathname)) return <></>
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
   const handleClose = () => {
     setAnchorEl(null)
+  }
+
+  const addNewTask = () => {
+    const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/current/tasks'
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'access-token': localStorage.getItem('access-token'),
+      client: localStorage.getItem('client'),
+      uid: localStorage.getItem('uid'),
+    }
+
+    axios({ method: 'POST', url: url, headers: headers })
+      .then((res: AxiosResponse) => {
+        router.push('/current/tasks/edit/' + res.data.id)
+      })
+      .catch((e: AxiosError<{ error: string }>) => {
+        console.log(e.message)
+      })
   }
 
   return (
@@ -112,6 +135,7 @@ const Header = () => {
                         width: 100,
                         boxShadow: 'none',
                       }}
+                      onClick={addNewTask}
                     >
                       新規作成
                     </Button>
