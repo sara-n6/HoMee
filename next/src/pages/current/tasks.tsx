@@ -120,13 +120,15 @@ const CurrentTasks: NextPage = () => {
                   )}
                 </>
                 <Box>
-                  <Avatar>
-                    <Tooltip title="編集する">
-                      <IconButton sx={{ backgroundColor: '#F1F5FA' }}>
-                        <EditIcon sx={{ color: '#99AAB6' }} />
-                      </IconButton>
-                    </Tooltip>
-                  </Avatar>
+                  <Link href={'/current/tasks/edit/' + task.id}>
+                    <Avatar>
+                      <Tooltip title="編集する">
+                        <IconButton sx={{ backgroundColor: '#F1F5FA' }}>
+                          <EditIcon sx={{ color: '#99AAB6' }} />
+                        </IconButton>
+                      </Tooltip>
+                    </Avatar>
+                  </Link>
                 </Box>
                 <Box>
                   <Link href={'/current/tasks/' + task.id}>
