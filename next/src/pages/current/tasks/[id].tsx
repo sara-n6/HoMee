@@ -160,7 +160,7 @@ const CurrentTaskDetail: NextPage = () => {
                   marginTop: { xs: '24px', sm: '40px' },
                 }}
               >
-                <MarkdownText body={task.body} />
+                <MarkdownText content={task.body} />
               </Box>
             </Card>
           </Box>
