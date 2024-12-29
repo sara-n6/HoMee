@@ -187,7 +187,9 @@ const CurrentTasksEdit: NextPage = () => {
                 checked={previewChecked}
                 onChange={handleChangePreviewChecked}
               />
-              <Typography sx={{ fontSize: { xs: 12, sm: 15 } }}>
+              <Typography
+                sx={{ fontSize: { xs: 12, sm: 15 }, color: 'text.primary' }}
+              >
                 プレビュー表示
               </Typography>
             </Box>
@@ -196,7 +198,9 @@ const CurrentTasksEdit: NextPage = () => {
                 checked={statusChecked}
                 onChange={handleChangeStatusChecked}
               />
-              <Typography sx={{ fontSize: { xs: 12, sm: 15 } }}>
+              <Typography
+                sx={{ fontSize: { xs: 12, sm: 15 }, color: 'text.primary' }}
+              >
                 下書き／公開
               </Typography>
             </Box>
