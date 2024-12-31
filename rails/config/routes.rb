@@ -9,7 +9,11 @@ Rails.application.routes.draw do
       end
       namespace :current do
         resource :user, only: [:show]
-        resources :tasks, only: [:index, :show, :create, :update]
+        resources :tasks, only: [:index, :show, :create, :update, :destroy] do
+          collection do
+            patch :batch_complete
+          end
+        end
       end
       resources :tasks, only: [:index, :show]
     end

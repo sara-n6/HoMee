@@ -17,7 +17,7 @@ RSpec.describe "Api::V1::Current::Tasks", type: :request do
         subject
         res = JSON.parse(response.body)
         expect(res.length).to eq 3
-        expect(res[0].keys).to eq ["id", "title", "body", "status", "created_at", "from_today", "user"]
+        expect(res[0].keys).to eq ["id", "title", "body", "status", "end_date", "created_at", "from_today", "user"]
         expect(res[0]["user"].keys).to eq ["name"]
         expect(response).to have_http_status(:ok)
       end
@@ -46,7 +46,7 @@ RSpec.describe "Api::V1::Current::Tasks", type: :request do
       it "正常にレコードを取得できる" do
         subject
         res = JSON.parse(response.body)
-        expect(res.keys).to eq ["id", "title", "body", "status", "created_at", "from_today", "user"]
+        expect(res.keys).to eq ["id", "title", "body", "status", "end_date", "created_at", "from_today", "user"]
         expect(res["user"].keys).to eq ["name"]
         expect(response).to have_http_status(:ok)
       end
@@ -73,7 +73,7 @@ RSpec.describe "Api::V1::Current::Tasks", type: :request do
         expect { subject }.to change { current_user.tasks.count }.by(1)
         expect(current_user.tasks.last).to be_unsaved
         res = JSON.parse(response.body)
-        expect(res.keys).to eq ["id", "title", "body", "status", "created_at", "from_today", "user"]
+        expect(res.keys).to eq ["id", "title", "body", "status", "end_date", "created_at", "from_today", "user"]
         expect(res["user"].keys).to eq ["name"]
         expect(response).to have_http_status(:ok)
       end
@@ -85,7 +85,7 @@ RSpec.describe "Api::V1::Current::Tasks", type: :request do
       it "未保存ステータスの記事が新規作成される" do
         expect { subject }.not_to change { current_user.tasks.count }
         res = JSON.parse(response.body)
-        expect(res.keys).to eq ["id", "title", "body", "status", "created_at", "from_today", "user"]
+        expect(res.keys).to eq ["id", "title", "body", "status", "end_date", "created_at", "from_today", "user"]
         expect(res["user"].keys).to eq ["name"]
         expect(response).to have_http_status(:ok)
       end
@@ -109,7 +109,7 @@ RSpec.describe "Api::V1::Current::Tasks", type: :request do
           change { current_user_task.reload.body }.from("テスト本文1").to("テスト本文2") and
           change { current_user_task.reload.status }.from("draft").to("published")
         res = JSON.parse(response.body)
-        expect(res.keys).to eq ["id", "title", "body", "status", "created_at", "from_today", "user"]
+        expect(res.keys).to eq ["id", "title", "body", "status", "end_date", "created_at", "from_today", "user"]
         expect(res["user"].keys).to eq ["name"]
         expect(response).to have_http_status(:ok)
       end
