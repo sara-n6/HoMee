@@ -1,19 +1,13 @@
-import ArrowBackSharpIcon from '@mui/icons-material/ArrowBackSharp'
-import { LoadingButton } from '@mui/lab'
 import {
-  AppBar,
+  Button,
   Box,
   Card,
   Container,
-  IconButton,
-  Switch,
   TextField,
-  Toolbar,
   Typography,
 } from '@mui/material'
 import axios, { AxiosError } from 'axios'
 import type { NextPage } from 'next'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState, useMemo } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
@@ -44,15 +38,6 @@ const CurrentTasksEdit: NextPage = () => {
   const [previewChecked, setPreviewChecked] = useState<boolean>(false)
   const [statusChecked, setStatusChecked] = useState<boolean>(false)
   const [isFetched, setIsFetched] = useState<boolean>(false)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-
-  const handleChangePreviewChecked = () => {
-    setPreviewChecked(!previewChecked)
-  }
-
-  const handleChangeStatusChecked = () => {
-    setStatusChecked(!statusChecked)
-  }
 
   const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/current/tasks/'
   const { id } = router.query
@@ -133,6 +118,7 @@ const CurrentTasksEdit: NextPage = () => {
           severity: 'success',
           pathname: '/current/tasks/edit/[id]',
         })
+        router.push('/')
       })
       .catch((err: AxiosError<{ error: string }>) => {
         console.log(err.message)
@@ -154,77 +140,34 @@ const CurrentTasksEdit: NextPage = () => {
       onSubmit={handleSubmit(onSubmit)}
       sx={{ backgroundColor: '#EDF2F7', minHeight: '100vh' }}
     >
-      <AppBar
-        position="fixed"
-        sx={{
-          backgroundColor: '#EDF2F7',
-        }}
-      >
-        <Toolbar
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Box sx={{ width: 50 }}>
-            <Link href="/current/tasks">
-              <IconButton>
-                <ArrowBackSharpIcon />
-              </IconButton>
-            </Link>
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              gap: { xs: '0 16px', sm: '0 24px' },
-            }}
-          >
-            <Box sx={{ textAlign: 'center' }}>
-              <Switch
-                checked={previewChecked}
-                onChange={handleChangePreviewChecked}
-              />
-              <Typography
-                sx={{ fontSize: { xs: 12, sm: 15 }, color: 'text.primary' }}
-              >
-                プレビュー表示
-              </Typography>
-            </Box>
-            <Box sx={{ textAlign: 'center' }}>
-              <Switch
-                checked={statusChecked}
-                onChange={handleChangeStatusChecked}
-              />
-              <Typography
-                sx={{ fontSize: { xs: 12, sm: 15 }, color: 'text.primary' }}
-              >
-                下書き／公開
-              </Typography>
-            </Box>
-            <LoadingButton
-              variant="contained"
-              type="submit"
-              loading={isLoading}
-              sx={{
-                color: 'white',
-                fontWeight: 'bold',
-                fontSize: { xs: 12, sm: 16 },
-              }}
-            >
-              更新する
-            </LoadingButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
       <Container
         maxWidth="lg"
         sx={{ pt: 11, pb: 3, display: 'flex', justifyContent: 'center' }}
       >
         {!previewChecked && (
           <Box sx={{ width: 840 }}>
+            <Typography
+              component="h2"
+              sx={{
+                fontSize: { xs: 16, sm: 16 },
+                fontWeight: 'bold',
+                textAlign: 'center',
+                mb: 1,
+              }}
+            >
+              --- タスク登録 ---
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: { xs: 14, sm: 16 },
+                fontWeight: 'normal',
+                color: 'text.primary',
+                mb: 1,
+                paddingLeft: 2,
+              }}
+            >
+              タイトル
+            </Typography>
             <Box sx={{ mb: 2 }}>
               <Controller
                 name="title"
@@ -235,14 +178,24 @@ const CurrentTasksEdit: NextPage = () => {
                     type="text"
                     error={fieldState.invalid}
                     helperText={fieldState.error?.message}
-                    placeholder="Write in Title"
                     fullWidth
                     sx={{ backgroundColor: 'white' }}
                   />
                 )}
               />
             </Box>
-            <Box>
+            <Typography
+              sx={{
+                fontSize: { xs: 14, sm: 16 },
+                fontWeight: 'normal',
+                color: 'text.primary',
+                mb: 1,
+                paddingLeft: 2,
+              }}
+            >
+              タスク内容
+            </Typography>
+            <Box sx={{ mb: 2 }}>
               <Controller
                 name="body"
                 control={control}
@@ -254,12 +207,54 @@ const CurrentTasksEdit: NextPage = () => {
                     helperText={fieldState.error?.message}
                     multiline
                     fullWidth
-                    placeholder="Write in Markdown Text"
-                    rows={25}
+                    rows={10}
                     sx={{ backgroundColor: 'white' }}
                   />
                 )}
               />
+            </Box>
+            <Typography
+              sx={{
+                fontSize: { xs: 14, sm: 16 },
+                fontWeight: 'normal',
+                color: 'text.primary',
+                mb: 1,
+                paddingLeft: 2,
+              }}
+            >
+              期限
+            </Typography>
+            <Box sx={{ mb: 2 }}>
+              <Controller
+                name="end_date"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <TextField
+                    {...field}
+                    type="text"
+                    placeholder="yyyy/mm/dd"
+                    fullWidth
+                    sx={{ backgroundColor: 'white' }}
+                  />
+                )}
+              />
+            </Box>
+
+            <Box sx={{ textAlign: 'center' }}>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  handleSubmit(onSubmit)()
+                }}
+                sx={{
+                  color: 'white',
+                  fontWeight: 'bold',
+                  fontSize: { xs: 12, sm: 16 },
+                  mt: 1,
+                }}
+              >
+                作成
+              </Button>
             </Box>
           </Box>
         )}

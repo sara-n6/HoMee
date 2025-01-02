@@ -27,9 +27,6 @@ const Header = () => {
   const open = Boolean(anchorEl)
   const router = useRouter()
 
-  const hideHeaderPathnames = ['/current/tasks/edit/[id]']
-  if (hideHeaderPathnames.includes(router.pathname)) return <></>
-
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
