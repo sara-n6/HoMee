@@ -10,8 +10,7 @@ ja:
     task:
       status:
         unsaved: 未保存
-        draft: 下書き
-        published: 公開中
+        saved: 保存
     errors:
       messages:
         record_invalid: 'バリデーションに失敗しました: %{errors}'

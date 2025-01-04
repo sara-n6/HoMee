@@ -98,16 +98,16 @@ RSpec.describe "Api::V1::Current::Tasks", type: :request do
     let(:headers) { current_user.create_new_auth_token }
     let(:current_user) { create(:user) }
     let(:other_user) { create(:user) }
-    let(:params) { { "task": { "title": "テストタイトル2", "body": "テスト本文2", "status": "published" } } }
+    let(:params) { { "task": { "title": "テストタイトル2", "body": "テスト本文2", "status": "saved" } } }
 
     context ":id がログインユーザーに紐づく tasks レコードの id である時" do
-      let(:current_user_task) { create(:task, title: "テストタイトル1", body: "テスト本文1", status: :draft, user: current_user) }
+      let(:current_user_task) { create(:task, title: "テストタイトル1", body: "テスト本文1", status: :unsaved, user: current_user) }
       let(:id) { current_user_task.id }
 
       it "正常にレコードを更新できる" do
         expect { subject }.to change { current_user_task.reload.title }.from("テストタイトル1").to("テストタイトル2") and
           change { current_user_task.reload.body }.from("テスト本文1").to("テスト本文2") and
-          change { current_user_task.reload.status }.from("draft").to("published")
+          change { current_user_task.reload.status }.from("unsaved").to("saved")
         res = JSON.parse(response.body)
         expect(res.keys).to eq ["id", "title", "body", "status", "end_date", "created_at", "from_today", "user"]
         expect(res["user"].keys).to eq ["name"]

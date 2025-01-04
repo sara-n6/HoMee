@@ -1,20 +1,13 @@
-import {
-  Button,
-  Box,
-  Card,
-  Container,
-  TextField,
-  Typography,
-} from '@mui/material'
+import { Button, Box, Container, TextField, Typography } from '@mui/material'
 import axios, { AxiosError } from 'axios'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useEffect, useState, useMemo } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import snakecaseKeys from 'snakecase-keys'
 import useSWR from 'swr'
 import Error from '@/components/Error'
 import Loading from '@/components/Loading'
-import MarkdownText from '@/components/MarkdownText'
 import { useUserState, useSnackbarState } from '@/hooks/useGlobalState'
 import { useRequireSignedIn } from '@/hooks/useRequireSignedIn'
 import { fetcher } from '@/utils'
@@ -23,11 +16,13 @@ type TaskProps = {
   title: string
   body: string
   status: string
+  endDate: string
 }
 
 type TaskFormData = {
   title: string
   body: string
+  endDate: string
 }
 
 const CurrentTasksEdit: NextPage = () => {
@@ -35,9 +30,8 @@ const CurrentTasksEdit: NextPage = () => {
   const router = useRouter()
   const [user] = useUserState()
   const [, setSnackbar] = useSnackbarState()
-  const [previewChecked, setPreviewChecked] = useState<boolean>(false)
-  const [statusChecked, setStatusChecked] = useState<boolean>(false)
   const [isFetched, setIsFetched] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/current/tasks/'
   const { id } = router.query
@@ -51,24 +45,34 @@ const CurrentTasksEdit: NextPage = () => {
       return {
         title: '',
         body: '',
-        status: false,
+        status: '',
+        endDate: '',
       }
     }
     return {
       title: data.title == null ? '' : data.title,
       body: data.body == null ? '' : data.body,
       status: data.status,
+      endDate:
+        data.end_date == '----:--:--'
+          ? ''
+          : new Intl.DateTimeFormat('ja', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+            })
+              .format(new Date(data.end_date))
+              .replace(/\//g, '-'),
     }
   }, [data])
 
-  const { handleSubmit, control, reset, watch } = useForm<TaskFormData>({
+  const { handleSubmit, control, reset } = useForm<TaskFormData>({
     defaultValues: task,
   })
 
   useEffect(() => {
     if (data) {
       reset(task)
-      setStatusChecked(task.status == '公開中')
       setIsFetched(true)
     }
   }, [data, task, reset])
@@ -82,9 +86,9 @@ const CurrentTasksEdit: NextPage = () => {
       })
     }
 
-    if (statusChecked && data.body == '') {
+    if (data.body == '') {
       return setSnackbar({
-        message: '本文なしのタスクは公開はできません',
+        message: '本文なしのタスクは保存できません',
         severity: 'error',
         pathname: '/current/tasks/edit/[id]',
       })
@@ -102,28 +106,30 @@ const CurrentTasksEdit: NextPage = () => {
       uid: localStorage.getItem('uid'),
     }
 
-    const status = statusChecked ? 'published' : 'draft'
-
-    const patchData = { ...data, status: status }
+    const patchData = { ...data, status: 'saved' }
 
     axios({
-      method: 'PATCH',
+      method: id ? 'PATCH' : 'POST',
       url: patchUrl,
-      data: patchData,
+      data: snakecaseKeys(patchData),
       headers: headers,
     })
       .then(() => {
         setSnackbar({
-          message: 'タスクを保存しました',
+          message: id ? 'タスクを更新しました' : 'タスクを作成しました',
           severity: 'success',
-          pathname: '/current/tasks/edit/[id]',
+          pathname: '/',
         })
         router.push('/')
       })
       .catch((err: AxiosError<{ error: string }>) => {
         console.log(err.message)
         setSnackbar({
-          message: 'タスクの保存に失敗しました',
+          message: id
+            ? `
+          タスクの更新に失敗しました
+        `
+            : 'タスクの作成に失敗しました',
           severity: 'error',
           pathname: '/current/tasks/edit/[id]',
         })
@@ -138,152 +144,128 @@ const CurrentTasksEdit: NextPage = () => {
     <Box
       component="form"
       onSubmit={handleSubmit(onSubmit)}
-      sx={{ backgroundColor: '#EDF2F7', minHeight: '100vh' }}
+      sx={{ minHeight: '100vh' }}
     >
       <Container
         maxWidth="lg"
         sx={{ pt: 11, pb: 3, display: 'flex', justifyContent: 'center' }}
       >
-        {!previewChecked && (
-          <Box sx={{ width: 840 }}>
-            <Typography
-              component="h2"
-              sx={{
-                fontSize: { xs: 16, sm: 16 },
-                fontWeight: 'bold',
-                textAlign: 'center',
-                mb: 1,
-              }}
-            >
-              --- タスク登録 ---
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: { xs: 14, sm: 16 },
-                fontWeight: 'normal',
-                color: 'text.primary',
-                mb: 1,
-                paddingLeft: 2,
-              }}
-            >
-              タイトル
-            </Typography>
-            <Box sx={{ mb: 2 }}>
-              <Controller
-                name="title"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <TextField
-                    {...field}
-                    type="text"
-                    error={fieldState.invalid}
-                    helperText={fieldState.error?.message}
-                    fullWidth
-                    sx={{ backgroundColor: 'white' }}
-                  />
-                )}
-              />
-            </Box>
-            <Typography
-              sx={{
-                fontSize: { xs: 14, sm: 16 },
-                fontWeight: 'normal',
-                color: 'text.primary',
-                mb: 1,
-                paddingLeft: 2,
-              }}
-            >
-              タスク内容
-            </Typography>
-            <Box sx={{ mb: 2 }}>
-              <Controller
-                name="body"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <TextField
-                    {...field}
-                    type="textarea"
-                    error={fieldState.invalid}
-                    helperText={fieldState.error?.message}
-                    multiline
-                    fullWidth
-                    rows={10}
-                    sx={{ backgroundColor: 'white' }}
-                  />
-                )}
-              />
-            </Box>
-            <Typography
-              sx={{
-                fontSize: { xs: 14, sm: 16 },
-                fontWeight: 'normal',
-                color: 'text.primary',
-                mb: 1,
-                paddingLeft: 2,
-              }}
-            >
-              期限
-            </Typography>
-            <Box sx={{ mb: 2 }}>
-              <Controller
-                name="end_date"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <TextField
-                    {...field}
-                    type="text"
-                    placeholder="yyyy/mm/dd"
-                    fullWidth
-                    sx={{ backgroundColor: 'white' }}
-                  />
-                )}
-              />
-            </Box>
+        <Box sx={{ width: 840 }}>
+          <Typography
+            component="h2"
+            sx={{
+              fontSize: { xs: 16, sm: 16 },
+              fontWeight: 'bold',
+              textAlign: 'center',
+              mb: 1,
+            }}
+          >
+            --- タスク{task.status == '未保存' ? '登録' : '編集'} ---
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: { xs: 14, sm: 16 },
+              fontWeight: 'normal',
+              color: 'text.primary',
+              mb: 1,
+              paddingLeft: 2,
+            }}
+          >
+            タイトル
+          </Typography>
+          <Box sx={{ mb: 2 }}>
+            <Controller
+              name="title"
+              control={control}
+              render={({ field, fieldState }) => (
+                <TextField
+                  {...field}
+                  type="text"
+                  error={fieldState.invalid}
+                  helperText={fieldState.error?.message}
+                  fullWidth
+                  sx={{ backgroundColor: 'white' }}
+                />
+              )}
+            />
+          </Box>
+          <Typography
+            sx={{
+              fontSize: { xs: 14, sm: 16 },
+              fontWeight: 'normal',
+              color: 'text.primary',
+              mb: 1,
+              paddingLeft: 2,
+            }}
+          >
+            タスク内容
+          </Typography>
+          <Box sx={{ mb: 2 }}>
+            <Controller
+              name="body"
+              control={control}
+              render={({ field, fieldState }) => (
+                <TextField
+                  {...field}
+                  type="textarea"
+                  error={fieldState.invalid}
+                  helperText={fieldState.error?.message}
+                  multiline
+                  fullWidth
+                  rows={10}
+                  sx={{ backgroundColor: 'white' }}
+                />
+              )}
+            />
+          </Box>
+          <Typography
+            sx={{
+              fontSize: { xs: 14, sm: 16 },
+              fontWeight: 'normal',
+              color: 'text.primary',
+              mb: 1,
+              paddingLeft: 2,
+            }}
+          >
+            期限
+          </Typography>
+          <Box sx={{ mb: 2 }}>
+            <Controller
+              name="endDate"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  type="date"
+                  placeholder="yyyy/mm/dd"
+                  fullWidth
+                  sx={{ backgroundColor: 'white' }}
+                />
+              )}
+            />
+          </Box>
 
-            <Box sx={{ textAlign: 'center' }}>
-              <Button
-                variant="contained"
-                onClick={() => {
-                  handleSubmit(onSubmit)()
-                }}
-                sx={{
-                  color: 'white',
-                  fontWeight: 'bold',
-                  fontSize: { xs: 12, sm: 16 },
-                  mt: 1,
-                }}
-              >
-                作成
-              </Button>
-            </Box>
-          </Box>
-        )}
-        {previewChecked && (
-          <Box sx={{ width: 840 }}>
-            <Typography
-              component="h2"
+          <Box sx={{ textAlign: 'center' }}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                handleSubmit(onSubmit)()
+              }}
               sx={{
-                fontSize: { xs: 21, sm: 25 },
+                color: 'white',
                 fontWeight: 'bold',
-                textAlign: 'center',
-                pt: 2,
-                pb: 4,
+                fontSize: { xs: 12, sm: 16 },
+                mt: 1,
               }}
             >
-              {watch('title')}
-            </Typography>
-            <Card sx={{ boxShadow: 'none', borderRadius: '12px' }}>
-              <Box
-                sx={{
-                  padding: { xs: '0 24px 24px 24px', sm: '0 40px 40px 40px' },
-                  marginTop: { xs: '24px', sm: '40px' },
-                }}
-              >
-                <MarkdownText content={watch('content')} />
-              </Box>
-            </Card>
+              {isLoading
+                ? '処理中...'
+                : task.status == '未保存'
+                  ? '作成'
+                  : '更新'}
+            </Button>
           </Box>
-        )}
+        </Box>
       </Container>
     </Box>
   )

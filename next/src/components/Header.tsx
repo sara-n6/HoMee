@@ -5,7 +5,6 @@ import {
   AppBar,
   Avatar,
   Box,
-  Button,
   Container,
   Divider,
   IconButton,
@@ -26,6 +25,9 @@ const Header = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const router = useRouter()
+
+  const hideHeaderPathnames = ['']
+  if (hideHeaderPathnames.includes(router.pathname)) return <></>
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -57,10 +59,10 @@ const Header = () => {
     <AppBar
       position="static"
       sx={{
-        backgroundColor: 'white',
+        backgroundColor: '#f1d9a1',
         color: 'black',
         boxShadow: 'none',
-        py: 1,
+        py: '12px',
       }}
     >
       <Container maxWidth="lg" sx={{ px: 2 }}>
@@ -79,39 +81,25 @@ const Header = () => {
           {user.isFetched && (
             <>
               {!user.isSignedIn && (
-                <Box>
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    sx={{
-                      color: 'white',
-                      textTransform: 'none',
-                      fontSize: 16,
-                      borderRadius: 2,
-                      boxShadow: 'none',
-                    }}
-                    onClick={() => {
-                      router.push('/sign_in')
-                    }}
-                  >
-                    ログイン
-                  </Button>
+                <Box sx={{ display: 'flex' }}>
                   <Link href="/sign_up">
-                    <Button
-                      color="primary"
-                      variant="outlined"
+                    <Box
                       sx={{
-                        textTransform: 'none',
                         fontSize: 16,
-                        lineHeight: '27px',
-                        borderRadius: 2,
-                        boxShadow: 'none',
-                        border: '1.5px solid #3EA8FF',
-                        ml: 2,
                       }}
                     >
                       会員登録
-                    </Button>
+                    </Box>
+                  </Link>
+                  <Link href="/sign_in">
+                    <Box
+                      sx={{
+                        fontSize: 16,
+                        ml: 2,
+                      }}
+                    >
+                      ログイン
+                    </Box>
                   </Link>
                 </Box>
               )}
@@ -122,23 +110,6 @@ const Header = () => {
                       <PersonIcon />
                     </Avatar>
                   </IconButton>
-                  <Box sx={{ ml: 2 }}>
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      sx={{
-                        color: 'white',
-                        textTransform: 'none',
-                        fontSize: 16,
-                        borderRadius: 2,
-                        width: 100,
-                        boxShadow: 'none',
-                      }}
-                      onClick={addNewTask}
-                    >
-                      新規作成
-                    </Button>
-                  </Box>
                   <Menu
                     anchorEl={anchorEl}
                     id="account-menu"
@@ -152,20 +123,18 @@ const Header = () => {
                       </Typography>
                     </Box>
                     <Divider />
-                    <Link href="/current/tasks">
-                      <MenuItem>
-                        <ListItemIcon>
-                          <TaskIcon fontSize="small" />
-                        </ListItemIcon>
-                        タスクの管理
-                      </MenuItem>
-                    </Link>
+                    <MenuItem onClick={addNewTask}>
+                      <ListItemIcon>
+                        <TaskIcon fontSize="small" />
+                      </ListItemIcon>
+                      タスク登録
+                    </MenuItem>
                     <Link href="/sign_out">
                       <MenuItem>
                         <ListItemIcon>
                           <Logout fontSize="small" />
                         </ListItemIcon>
-                        ログアウト
+                        サインアウト
                       </MenuItem>
                     </Link>
                   </Menu>
