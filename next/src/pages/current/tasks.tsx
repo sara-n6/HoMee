@@ -1,4 +1,3 @@
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import EditIcon from '@mui/icons-material/Edit'
 import {
   Avatar,
@@ -85,57 +84,13 @@ const CurrentTasks: NextPage = () => {
                   alignItems: 'center',
                 }}
               >
-                <>
-                  {task.status == '下書き' && (
-                    <Box
-                      sx={{
-                        display: 'inline',
-                        fontSize: 12,
-                        textAlign: 'center',
-                        border: '1px solid #9FAFBA',
-                        p: '4px',
-                        borderRadius: 1,
-                        color: '#9FAFBA',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      {task.status}
-                    </Box>
-                  )}
-                  {task.status == '公開中' && (
-                    <Box
-                      sx={{
-                        display: 'inline',
-                        fontSize: 12,
-                        textAlgin: 'center',
-                        border: '1px solid #3EA8FF',
-                        p: '4px',
-                        borderRadius: 1,
-                        color: '#3EA8FF',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      {task.status}
-                    </Box>
-                  )}
-                </>
+                <></>
                 <Box>
                   <Link href={'/current/tasks/edit/' + task.id}>
                     <Avatar>
                       <Tooltip title="編集する">
                         <IconButton sx={{ backgroundColor: '#F1F5FA' }}>
                           <EditIcon sx={{ color: '#99AAB6' }} />
-                        </IconButton>
-                      </Tooltip>
-                    </Avatar>
-                  </Link>
-                </Box>
-                <Box>
-                  <Link href={'/current/tasks/' + task.id}>
-                    <Avatar>
-                      <Tooltip title="表示を確認">
-                        <IconButton sx={{ backgroundColor: '#F1F5FA' }}>
-                          <ChevronRightIcon sx={{ color: '#99AAB6' }} />
                         </IconButton>
                       </Tooltip>
                     </Avatar>

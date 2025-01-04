@@ -1,8 +1,8 @@
 class Task < ApplicationRecord
   belongs_to :user
-  enum :status, { unsaved: 10, draft: 20, published: 30 }
+  enum :status, { unsaved: 10, saved: 20 }
 
-  validates :title, :body, presence: true, if: :published?
+  validates :title, :body, presence: true, if: :saved?
   validate :verify_only_one_unsaved_status_is_allowed
 
   private

@@ -5,8 +5,8 @@ RSpec.describe "Api::V1::Tasks", type: :request do
     subject { get(api_v1_tasks_path(params)) }
 
     before do
-      create_list(:task, 25, status: :published)
-      create_list(:task, 8, status: :draft)
+      create_list(:task, 25, status: :saved)
+      create_list(:task, 8, status: :unsaved)
     end
 
     context "page を params で送信しない時" do
@@ -53,7 +53,7 @@ RSpec.describe "Api::V1::Tasks", type: :request do
       let(:task_id) { task.id }
 
       context "tasks レコードのステータスが公開中の時" do
-        let(:status) { :published }
+        let(:status) { :saved }
 
         it "正常にレコードを取得できる" do
           subject
@@ -64,8 +64,8 @@ RSpec.describe "Api::V1::Tasks", type: :request do
         end
       end
 
-      context "tasks レコードのステータスが下書きの時" do
-        let(:status) { :draft }
+      context "tasks レコードのステータスが未保存の時" do
+        let(:status) { :unsaved }
 
         it "ActiveRecord::RecordNotFound エラーが返る" do
           expect { subject }.to raise_error(ActiveRecord::RecordNotFound)

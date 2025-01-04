@@ -22,7 +22,7 @@ RSpec.describe Task, type: :model do
     let(:user) { create(:user) }
     let(:end_date) { Time.zone.today + 7.days } # デフォルトは未来の日付
     let(:completed_date) { Time.zone.today }
-    let(:status) { :published }
+    let(:status) { :saved }
 
     context "全ての値が正常な時" do
       it "検証が通る" do

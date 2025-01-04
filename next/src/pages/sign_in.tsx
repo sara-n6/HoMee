@@ -119,7 +119,7 @@ const SignIn: NextPage = () => {
             variant="contained"
             type="submit"
             loading={isLoading}
-            sx={{ fontWeight: 'bold', color: 'white' }}
+            sx={{ fontWeight: 'bold', color: '#856723' }}
           >
             送信する
           </LoadingButton>
