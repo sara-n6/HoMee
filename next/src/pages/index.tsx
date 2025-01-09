@@ -322,10 +322,11 @@ const Index: NextPage = () => {
               justifyContent: 'center',
               alignItems: 'center',
               textAlign: 'center',
-              height: '100vh', // 画面全体で中央揃え
+              height: '100vh - 116px ', // 画面全体で中央揃え
               px: 2,
             }}
           >
+            <Image src="/good.svg" width={150} height={150} alt="Good" />
             <Typography
               variant="h1"
               sx={{ fontSize: 36, fontWeight: 'bold', mb: 3 }}
