@@ -62,7 +62,8 @@ const SignUp: NextPage = () => {
           localStorage.setItem('client', res.headers['client'] || '')
           localStorage.setItem('uid', res.headers['uid'] || '')
           setSnackbar({
-            message: '認証メールをご確認ください',
+            message:
+              '認証メールを送信しましたので、ご確認ください。メールが届かない場合は、迷惑メールフォルダに振り分けられていないかご確認ください。',
             severity: 'success',
             pathname: '/',
           })
@@ -126,7 +127,7 @@ const SignUp: NextPage = () => {
               <TextField
                 {...field}
                 type="password"
-                label="パスワード"
+                label="パスワード(6文字以上で設定)"
                 error={fieldState.invalid}
                 helperText={fieldState.error?.message}
                 sx={{ backgroundColor: 'white' }}
